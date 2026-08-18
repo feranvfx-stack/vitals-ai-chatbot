@@ -1,0 +1,399 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap');
+
+:root {
+--bg-gradient: linear-gradient(135deg, #e6f0fa 0%, #f3f7fb 100%);
+--surface: #ffffff;
+--text: #0f2a16;
+--text-muted: #648b77;
+--border: #e2e8f0;
+--brand: #0ee9a7;
+--brand-light: #e0f2fe;
+--brand-gradient: linear-gradient(135deg, #0cf7cf 0%, #0ee9a7 100%);
+--ai-msg-bg: #f8fafc;
+}
+*
+{ 
+    box-sizing: border-box; 
+}
+
+body {
+margin: 0;
+font-family: 'Inter', sans-serif;
+background: var(--bg-gradient);
+color: var(--text);
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+overflow: hidden;
+}
+
+.app {
+width: 100%;
+max-width: 950px;
+background-color: var(--surface);
+display: flex;
+flex-direction: column;
+height: 94vh;
+border-radius: 24px;
+box-shadow: 0 25px 50px -12px rgba(2, 132, 199, 0.15), 0 0 20px rgba(0,0,0,0.03);
+border: 1px solid rgba(255, 255, 255, 0.8);
+overflow: hidden;
+}
+
+.header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1.5rem 2.5rem;
+background: rgba(255, 255, 255, 0.95);
+border-bottom: 1px solid var(--border);
+box-shadow: 0 4px 20px -10px rgba(0,0,0,0.05);
+z-index: 10;
+}
+
+.brand {
+display: flex;
+align-items: center;
+gap: 0.75rem;
+font-family: 'Newsreader', serif;
+font-weight: 600;
+font-size: 1.5rem;
+letter-spacing: -0.02em;
+color: var(--brand);
+}
+
+.pulse {
+width: 42px;
+color: var(--brand);
+filter: drop-shadow(0 2px 4px rgba(2, 132, 199, 0.3));
+}
+.tabs {
+display: flex;
+gap: 1.5rem;
+}
+
+.tab {
+background: none;
+border: none;
+font-family: 'IBM Plex Mono', monospace;
+font-size: 0.85rem;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(--text-muted);
+cursor: pointer;
+padding: 0.5rem 0.25rem;
+border-bottom: 3px solid transparent;
+transition: all 0.3s ease;
+}
+
+.tab:hover {
+color: var(--brand);
+}
+
+.tab.active {
+color: var(--brand);
+border-bottom-color: var(--brand);
+font-weight: 600;
+}
+
+
+.care-panel {
+flex: 1;
+display: flex;
+flex-direction: column;
+overflow-y: auto;
+background-color: var(--surface);
+}
+
+.hidden {
+display: none !important;
+}
+
+.messages {
+flex: 1;
+padding: 2.5rem;
+display: flex;
+flex-direction: column;
+gap: 2rem;
+overflow-y: auto;
+scroll-behavior: smooth;
+}
+
+.msg {
+max-width: 80%;
+line-height: 1.6;
+position: relative;
+}
+
+.msg.user {
+align-self: flex-end;
+font-family: 'Inter', sans-serif;
+font-size: 0.95rem;
+background: var(--brand-gradient);
+color: #ffffff;
+padding: 1.1rem 1.5rem;
+border-radius: 20px 20px 4px 20px;
+box-shadow: 0 8px 16px -4px rgba(2, 132, 199, 0.25);
+}
+
+.msg.ai {
+align-self: flex-start;
+font-family: 'Newsreader', serif;
+font-size: 1.15rem;
+color: var(--text);
+background-color: var(--ai-msg-bg);
+padding: 1.25rem 1.75rem;
+border-radius: 20px 20px 20px 4px;
+border: 1px solid var(--border);
+box-shadow: 0 4px 12px -4px rgba(0,0,0,0.05);
+}
+
+.msg.ai .prose p {
+margin-top: 0;
+margin-bottom: 1rem;
+}
+
+.msg.ai .prose p:last-child {
+margin-bottom: 0;
+}
+.msg.ai .prose strong { font-weight: 600; color: var(--brand); }
+.msg.ai .prose ul, .msg.ai .prose ol { margin-top: 0; padding-left: 1.5rem; }
+.composer {
+display: flex;
+align-items: flex-end;
+padding: 1.5rem 2.5rem;
+background-color: var(--surface);
+border-top: 1px solid var(--border);
+gap: 1.25rem;
+box-shadow: 0 -10px 20px -10px rgba(0,0,0,0.02);
+}
+
+.composer textarea {
+flex: 1;
+border: 2px solid var(--border);
+background-color: #f8fafc;
+border-radius: 16px;
+resize: none;
+font-family: 'Inter', sans-serif;
+font-size: 1rem;
+line-height: 1.5;
+padding: 1rem 1.25rem;
+outline: none;
+max-height: 200px;
+color: var(--text);
+transition: all 0.3s ease;
+}
+
+.composer textarea:focus {
+border-color: var(--brand);
+background-color: var(--surface);
+box-shadow: 0 0 0 4px var(--brand-light);
+}
+
+.composer textarea::placeholder {
+color: #94a3b8;
+}
+
+.composer button {
+background: var(--brand-gradient);
+color: var(--surface);
+border: none;
+width: 52px;
+height: 52px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
+flex-shrink: 0;
+box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.composer button:hover {
+transform: scale(1.08) translateY(-2px);
+box-shadow: 0 6px 16px rgba(2, 132, 199, 0.4);
+}
+
+.composer button:disabled {
+background: #cbd5e1;
+box-shadow: none;
+cursor: not-allowed;
+transform: none;
+}
+
+
+.care {
+padding: 3rem 2.5rem;
+max-width: 800px;
+margin: 0 auto;
+width: 100%;
+}
+
+.care h1 {
+font-family: 'Newsreader', serif;
+font-size: 3rem;
+font-weight: 500;
+margin: 0 0 0.5rem 0;
+letter-spacing: -0.03em;
+color: var(--text);
+}
+
+.care .lede {
+font-family: 'Inter', sans-serif;
+font-size: 1.05rem;
+color: var(--text-muted);
+margin-bottom: 2.5rem;
+line-height: 1.6;
+}
+
+.map {
+width: 100%;
+height: 450px;
+border-radius: 20px;
+overflow: hidden;
+border: 4px solid var(--surface);
+box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+margin-bottom: 3rem;
+}
+
+.map .leaflet-container {
+width: 100%;
+height: 100%;
+font-family: 'Inter', sans-serif;
+}
+
+.hospital-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+.hospital-list li {
+padding: 1.25rem 1.5rem;
+background: #f8fafc;
+border: 1px solid var(--border);
+border-radius: 16px;
+font-size: 1.1rem;
+font-weight: 500;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 1.25rem;
+color: var(--text);
+transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.hospital-list li:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 12px -4px rgba(2, 132, 199, 0.15);
+border-color: var(--brand-light);
+background: var(--surface);
+}
+
+.hospital-list li::before {
+content: '🏥';
+font-size: 1.5rem;
+}
+
+
+.typing { display: flex; gap: 0.4rem; align-items: center; height: 24px; padding: 0 0.5rem; }
+.dot {
+width: 6px; height: 6px; background-color: var(--brand); border-radius: 50%;
+animation: pulse-dot 1.4s infinite ease-in-out both;
+opacity: 0.7;
+}
+.dot:nth-child(1) { animation-delay: -0.32s; }
+.dot:nth-child(2) { animation-delay: -0.16s; }
+@keyframes pulse-dot {
+0%, 80%, 100% { transform: scale(0); }
+40% { transform: scale(1); }
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; margin: 4px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; border: 2px solid var(--surface); }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+
+/* Empty state in chat */
+.empty-state {
+margin: auto;
+text-align: center;
+color: var(--text-muted);
+font-family: 'Inter', sans-serif;
+font-size: 0.95rem;
+padding: 2rem;
+}
+
+.msg.ai.error {
+border-color: #fecaca;
+background-color: #fef2f2;
+}
+
+.clear-btn {
+background: none;
+border: 1px solid var(--border);
+color: var(--text-muted);
+font-family: 'Inter', sans-serif;
+font-size: 0.8rem;
+padding: 0.5rem 0.9rem;
+border-radius: 12px;
+cursor: pointer;
+flex-shrink: 0;
+}
+
+.clear-btn:hover {
+color: var(--text);
+border-color: var(--text-muted);
+}
+
+.location-prompt {
+background: #f0f9f7;
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 1rem 1.5rem;
+margin-bottom: 1.5rem;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 1rem;
+flex-wrap: wrap;
+}
+
+.location-prompt p {
+margin: 0;
+color: var(--text-muted);
+font-size: 0.95rem;
+}
+
+.location-prompt.warn {
+background: #fef2f2;
+border-color: #fecaca;
+}
+
+.location-btn {
+background: var(--brand-gradient);
+color: #ffffff;
+border: none;
+font-family: 'Inter', sans-serif;
+font-size: 0.9rem;
+font-weight: 600;
+padding: 0.6rem 1.1rem;
+border-radius: 12px;
+cursor: pointer;
+flex-shrink: 0;
+}
+
+.coords {
+font-family: 'IBM Plex Mono', monospace;
+font-size: 0.85rem;
+color: var(--text-muted);
+margin: 0 0 1rem 0;
+}
+
+.distance {
+font-family: 'IBM Plex Mono', monospace;
+font-size: 0.85rem;
+color: var(--text-muted);
+font-weight: 600;
+flex-shrink: 0;
+}
