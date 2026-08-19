@@ -10,7 +10,7 @@ vitals = Flask(__name__)
 
 # Production Security: Pulls your live Netlify URL from Render environment variables
 # Falls back to your local Vite server for development testing
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://netlify.app")
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://vite.netlify.app")
 CORS(vitals, origins=["http://localhost:5173", FRONTEND_URL])
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
