@@ -1,24 +1,29 @@
-const ENDPOINT = "/api/chat";
 
-export async function sendMessage(history, newMessage) {
-  const res = await fetch(ENDPOINT, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      history: history.map((m) => ({ role: m.role, text: m.text })),
-      message: newMessage,
-    }),
-  });
+const API_URL = "https://vitals-ai-chatbot-1.onrender.com/";
 
-  const data = await res.json();
+export async function sendMessage(history, currentMessage) {
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        history: history,
+        message: currentMessage,
+      }),
+    });
 
-  if (!res.ok) {
-    throw new Error(data?.error || `Request failed (${res.status})`);
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || `Server responded with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.reply;
+
+  } catch (error) {
+    console.error("API Call Failed:", error);
+    throw error;
   }
-
-  if (!data.reply) {
-    throw new Error("No response from model");
-  }
-
-  return data.reply;
 }

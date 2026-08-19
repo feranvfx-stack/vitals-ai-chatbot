@@ -6,7 +6,6 @@ from flask_cors import CORS
 
 load_dotenv()
 
-# Initialize Flask directly for your backend service
 vitals = Flask(__name__)
 
 # Production Security: Pulls your live Netlify URL from Render environment variables
@@ -23,7 +22,6 @@ SYSTEM_PROMPT = """You are Vitals AI, a knowledgeable health assistant built int
 
 @vitals.route("/api/chat", methods=["POST"])
 def chat():
-    # Safety fallback to catch configuration oversights on Render
     if not GROQ_API_KEY:
         return jsonify({"error": "Server is missing GROQ_API_KEY"}), 500
 
@@ -34,7 +32,6 @@ def chat():
     if not new_message:
         return jsonify({"error": "No message provided"}), 400
 
-    # Build the conversation timeline payload for Groq's LLM
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for m in history:
         role = "assistant" if m.get("role") == "ai" else "user"
@@ -66,7 +63,6 @@ def chat():
     return jsonify({"reply": text})
 
 
-# Bound dynamically to Render's allocated container ports
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     vitals.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
