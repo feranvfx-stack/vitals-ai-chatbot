@@ -1,15 +1,18 @@
 :{$PORT}
 
-# Forward API calls to the Flask backend
+# Keep browser calls relative to the same origin, e.g. /api/chat
+# For Railway, set BACKEND_URL to your Flask service URL.
+# If the backend runs in the same service, use localhost:5000.
 handle /api/* {
-reverse_proxy https://zealous-insight-production-4108.up.railway.app {
-header_up Host {upstream_hostport}
-}
+    reverse_proxy {$BACKEND_URL:localhost:5000} {
+        header_up Host {upstream_hostport}
+        header_up X-Forwarded-Proto {scheme}
+    }
 }
 
 handle {
-root * dist
-file_server
-try_files {path} /index.html
-encode gzip
+    root * dist
+    file_server
+    try_files {path} /index.html
+    encode gzip
 }
