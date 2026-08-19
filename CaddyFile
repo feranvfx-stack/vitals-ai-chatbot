@@ -4,7 +4,7 @@
 # For Railway, set BACKEND_URL to your Flask service URL.
 # If the backend runs in the same service, use localhost:5000.
 handle /api/* {
-    reverse_proxy {$BACKEND_URL:localhost:5000} {
+    reverse_proxy {$BACKEND_URL:vitals-ai-chatbot-production.up.railway.app} {
         header_up Host {upstream_hostport}
         header_up X-Forwarded-Proto {scheme}
     }
