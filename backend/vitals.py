@@ -1,18 +1,18 @@
 import os
 import requests
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 load_dotenv()
 
-# 1. FIXED: Changed 'app' to 'vitals' to match your repository layout and Netlify setup
-vitals = Flask(__name__)
+# 1. FIXED: Configured Flask to search up one level and read Vite's production folder (dist)
+vitals = Flask(__name__, 
+              static_folder='../dist', 
+              static_url_path='/')
 
-# 2. FIXED: Replaced loose CORS(app) with strict origin security for production
-# This allows your local React dev server and your live Netlify site to make API calls safely.
-FRONTEND_URL = os.environ.get("https://vite.netlify.app", "http://localhost:5173")
-CORS(vitals, origins=["http://localhost:5173", FRONTEND_URL])
+# 2. ALLOW CORS: Keeps your local testing working fine while letting the unified app communicate
+CORS(vitals)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
@@ -64,7 +64,16 @@ def chat():
     return jsonify({"reply": text})
 
 
-# 3. FIXED: Bound to 0.0.0.0 and dynamic port for hosting platform deployment compatibility
+# 3. FIXED: Added Catch-All routes to serve React's built index.html for visual page views
+@vitals.route('/', defaults={'path': ''})
+@vitals.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(os.path.join(vitals.static_folder, path)):
+        return send_from_directory(vitals.static_folder, path)
+    else:
+        return send_from_directory(vitals.static_folder, 'index.html')
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     vitals.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
