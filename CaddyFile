@@ -1,5 +1,15 @@
 :{$PORT}
+
+# Forward API calls to the Flask backend
+handle /api/* {
+reverse_proxy https://zealous-insight-production-4108.up.railway.app {
+header_up Host {upstream_hostport}
+}
+}
+
+handle {
 root * dist
 file_server
 try_files {path} /index.html
 encode gzip
+}
