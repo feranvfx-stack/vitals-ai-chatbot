@@ -1,10 +1,10 @@
 :{$PORT}
 
-# Keep browser calls relative to the same origin, e.g. /api/chat
-# For Railway, set BACKEND_URL to your Flask service URL.
-# If the backend runs in the same service, use localhost:5000.
+# Browser requests should stay relative, e.g. /api/chat
+# On Railway, set BACKEND_URL to the full backend URL, including http(s).
+# Example: BACKEND_URL=https://your-backend.up.railway.app
 handle /api/* {
-    reverse_proxy {$BACKEND_URL:vitals-ai-chatbot-production.up.railway.app} {
+    reverse_proxy {$BACKEND_URL:http://localhost:5000} {
         header_up Host {upstream_hostport}
         header_up X-Forwarded-Proto {scheme}
     }

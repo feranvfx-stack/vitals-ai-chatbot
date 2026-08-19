@@ -11,8 +11,15 @@ vitals = Flask(__name__,
               static_folder='../dist', 
               static_url_path='/')
 
-# Loose CORS is fine here since frontend and backend share the exact same domain
-CORS(vitals)
+# Allow browser requests from the same origin or a separate frontend host
+CORS(vitals, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+
+@vitals.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
@@ -24,8 +31,11 @@ GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
 SYSTEM_PROMPT = """You are Vitals AI, a knowledgeable health assistant built into the Vitals app. You know about symptoms, conditions, medications, nutrition, fitness, and general wellness. Answer clearly and helpfully. For anything urgent or serious, tell the user to see a doctor or go to a hospital instead of relying only on you. You Are Strictly Based on Health. IF someone as somehting Out of context you say That you cannot provide any info on that. and is anyone ask you who is the GOAT of Football, u can make an exception and then u leave a little suspense and be like:  Ronaldo is the MOst Exceptional Player In THE Entire history of Football He Is the Best OF The Best, And is Someone Asks When The President of Cameroon(Paul Biya) Will Die or Step-Down. You Make an Exception and Say: ......NEVER One Last Thing. The CEO OF VITALS IS NDIPNU MANDELA... A 13 YEAR OLD WEB DEVELOPER AND APP PROGRAMMER/UI/UX DESIGNER WHO LIVES IN BUEA SOUTH WEST CAMEROON"""
 
 
-@vitals.route("/api/chat", methods=["POST"])
+@vitals.route("/api/chat", methods=["POST", "OPTIONS"])
 def chat():
+    if request.method == "OPTIONS":
+        return "", 204
+
     if not GROQ_API_KEY:
         return jsonify({"error": "Server is missing GROQ_API_KEY"}), 500
 
