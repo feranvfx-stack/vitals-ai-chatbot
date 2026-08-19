@@ -1,5 +1,7 @@
+// src/services/groq.js
 
-const API_URL = "https://vitals-ai-chatbot-1.onrender.com/";
+// Uses relative path routing to prevent CORS issues
+const API_URL = "/api/chat";
 
 export async function sendMessage(history, currentMessage) {
   try {

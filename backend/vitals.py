@@ -1,17 +1,18 @@
 import os
 import requests
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 load_dotenv()
 
-vitals = Flask(__name__)
+# Configured to look up one directory, then down into the React production build folder
+vitals = Flask(__name__, 
+              static_folder='../dist', 
+              static_url_path='/')
 
-# Production Security: Pulls your live Netlify URL from Render environment variables
-# Falls back to your local Vite server for development testing
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://vite.netlify.app")
-CORS(vitals, origins=["http://localhost:5173", FRONTEND_URL])
+# Loose CORS is fine here since frontend and backend share the exact same domain
+CORS(vitals)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
@@ -61,6 +62,16 @@ def chat():
         return jsonify({"error": "No response from model"}), 502
 
     return jsonify({"reply": text})
+
+
+# Catch-All Routes: Serves Vite's index.html file for any non-API web request
+@vitals.route('/', defaults={'path': ''})
+@vitals.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(os.path.join(vitals.static_folder, path)):
+        return send_from_directory(vitals.static_folder, path)
+    else:
+        return send_from_directory(vitals.static_folder, 'index.html')
 
 
 if __name__ == "__main__":
