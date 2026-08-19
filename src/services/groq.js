@@ -1,4 +1,4 @@
-const ENDPOINT = "http://localhost:5000/api/chat";
+const ENDPOINT = "/api/chat";
 
 export async function sendMessage(history, newMessage) {
   const res = await fetch(ENDPOINT, {
