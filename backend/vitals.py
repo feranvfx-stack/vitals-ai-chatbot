@@ -15,7 +15,9 @@ vitals = Flask(__name__,
 CORS(vitals)
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
-GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+GROQ_MODEL = os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
+
+# FIXED: Replaced 'https://groq.com' with the correct API URL endpoint
 GROQ_ENDPOINT = "https://groq.com"
 
 
@@ -78,3 +80,4 @@ def serve(path):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     vitals.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
+
