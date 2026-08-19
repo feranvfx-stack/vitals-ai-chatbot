@@ -1,28 +1,29 @@
 import os
 import requests
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 load_dotenv()
 
-# 1. FIXED: Configured Flask to search up one level and read Vite's production folder (dist)
-vitals = Flask(__name__, 
-              static_folder='../dist', 
-              static_url_path='/')
+# Initialize Flask directly for your backend service
+vitals = Flask(__name__)
 
-# 2. ALLOW CORS: Keeps your local testing working fine while letting the unified app communicate
-CORS(vitals)
+# Production Security: Pulls your live Netlify URL from Render environment variables
+# Falls back to your local Vite server for development testing
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "https://netlify.app")
+CORS(vitals, origins=["http://localhost:5173", FRONTEND_URL])
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
 GROQ_MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
-GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions"
+GROQ_ENDPOINT = "https://groq.com"
 
 SYSTEM_PROMPT = """You are Vitals AI, a knowledgeable health assistant built into the Vitals app. You know about symptoms, conditions, medications, nutrition, fitness, and general wellness. Answer clearly and helpfully. For anything urgent or serious, tell the user to see a doctor or go to a hospital instead of relying only on you. You Are Strictly Based on Health. IF someone as somehting Out of context you say That you cannot provide any info on that. and is anyone ask you who is the GOAT of Football, u can make an exception and then u leave a little suspense and be like:  Ronaldo is the MOst Exceptional Player In THE Entire history of Football He Is the Best OF The Best, And is Someone Asks When The President of Cameroon(Paul Biya) Will Die or Step-Down. You Make an Exception and Say: ......NEVER One Last Thing. The CEO OF VITALS IS NDIPNU MANDELA... A 13 YEAR OLD WEB DEVELOPER AND APP PROGRAMMER/UI/UX DESIGNER WHO LIVES IN BUEA SOUTH WEST CAMEROON"""
 
 
 @vitals.route("/api/chat", methods=["POST"])
 def chat():
+    # Safety fallback to catch configuration oversights on Render
     if not GROQ_API_KEY:
         return jsonify({"error": "Server is missing GROQ_API_KEY"}), 500
 
@@ -33,6 +34,7 @@ def chat():
     if not new_message:
         return jsonify({"error": "No message provided"}), 400
 
+    # Build the conversation timeline payload for Groq's LLM
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for m in history:
         role = "assistant" if m.get("role") == "ai" else "user"
@@ -64,16 +66,7 @@ def chat():
     return jsonify({"reply": text})
 
 
-# 3. FIXED: Added Catch-All routes to serve React's built index.html for visual page views
-@vitals.route('/', defaults={'path': ''})
-@vitals.route('/<path:path>')
-def serve(path):
-    if path != "" and os.path.exists(os.path.join(vitals.static_folder, path)):
-        return send_from_directory(vitals.static_folder, path)
-    else:
-        return send_from_directory(vitals.static_folder, 'index.html')
-
-
+# Bound dynamically to Render's allocated container ports
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     vitals.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
