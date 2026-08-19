@@ -11,7 +11,7 @@ vitals = Flask(__name__)
 
 # 2. FIXED: Replaced loose CORS(app) with strict origin security for production
 # This allows your local React dev server and your live Netlify site to make API calls safely.
-FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+FRONTEND_URL = os.environ.get("https://vite.netlify.app", "http://localhost:5173")
 CORS(vitals, origins=["http://localhost:5173", FRONTEND_URL])
 
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
