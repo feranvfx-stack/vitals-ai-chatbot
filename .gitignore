@@ -54,13 +54,39 @@ logs/
 *.log
 
 # Environment files
+.env
+.env.*
+!.env.example
 .env.local
 .env.*.local
+backend/.env
+backend/.env.*
+backend/.env.local
+src/config.js
+!.env.example
 
-# Coverage
+# Build outputs and local caches
+.vite/
+dist/
+coverage/
 .coverage
 coverage.xml
 htmlcov/
+.cache/
+*.tsbuildinfo
+
+# Secrets and certificates
+*.pem
+*.key
+*.crt
+
+# Local Python artifacts
+backend/__pycache__/
+backend/.pytest_cache/
+backend/.mypy_cache/
+backend/.coverage
+backend/.venv/
+backend/myenv/
 
 # OS files
 .DS_Store
