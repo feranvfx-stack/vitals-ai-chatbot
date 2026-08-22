@@ -39,8 +39,7 @@ def chat():
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for m in history:
         role = "assistant" if m.get("role") == "ai" else "user"
-        messages.append({"role": role, "content": m.get("text", "")})
-    messages.append({"role": "user", "content": new_message})
+      messages.append({"role": "user", "content": new_message})
 
     try:
         res = requests.post(
