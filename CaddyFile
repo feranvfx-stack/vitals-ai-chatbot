@@ -2,7 +2,7 @@
 
 # Forward API calls to the Flask backend
 handle /api/* {
-reverse_proxy https://zealous-insight-production-4108.up.railway.app {
+reverse_proxy https://vite-backend.up.railway.app {
 header_up Host {upstream_hostport}
 }
 }

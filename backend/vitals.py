@@ -39,6 +39,7 @@ def chat():
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for m in history:
         role = "assistant" if m.get("role") == "ai" else "user"
+        messages.append({"role": role, "content": m.get("text", "")})
     messages.append({"role": "user", "content": new_message})
 
     try:
@@ -79,4 +80,3 @@ def serve(path):
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     vitals.run(host="0.0.0.0", port=port, debug=True, use_reloader=False)
-
